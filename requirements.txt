@@ -1,0 +1,23 @@
+# Core
+Django==6.0.4
+python-dotenv==1.2.2
+
+# Excel processing
+openpyxl==3.1.5
+
+# PDF processing
+reportlab==5.0.1
+
+# Forms (optional but recommended for clean Bootstrap forms)
+django-crispy-forms==2.7
+crispy-bootstrap5==2026.3
+
+# AI Models (Providers)
+openai==3.3.1
+cerebras_cloud_sdk==1.91.0
+
+# Development / quality (optional - can move to requirements-dev.txt later)
+# pytest==9.1.1
+# pytest-django==4.14.0
+# ruff==0.14.11
+

@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Comparison Result" %} – FINALYZ{% endblock %}
+
+{% block content %}
+<div class="mb-4 d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'analysis:home' %}">{% trans "Home" %}</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'analysis:compare' %}">{% trans "Compare" %}</a></li>
+                <li class="breadcrumb-item active">{% trans "Result" %}</li>
+            </ol>
+        </nav>
+        <h1 class="h3 fw-bold mb-0">
+            {% trans "Period Comparison" %}
+            {% if comparison.company_name %}
+                <span class="text-muted fw-normal">– {{ comparison.company_name }}</span>
+            {% endif %}
+        </h1>
+        <p class="text-muted mb-0">
+            {{ comparison.label_a }} → {{ comparison.label_b }}
+            · {% trans "Improved" %}: <span class="text-success">{{ comparison.improved }}</span>
+            · {% trans "Worsened" %}: <span class="text-danger">{{ comparison.worsened }}</span>
+        </p>
+        {% if comparison.averages_derived %}
+        <p class="small text-muted mb-0 mt-1">
+            <i class="bi bi-info-circle me-1"></i>
+            {% trans "Averages for the current period (assets, equity, and working-capital lines when available) were derived as (Period A + Period B) ÷ 2 so turnover and DuPont ratios use the textbook denominator." %}
+        </p>
+        {% endif %}
+    </div>
+    <div class="d-flex gap-2">
+        <a href="{% url 'analysis:compare' %}" class="btn btn-outline-primary">{% trans "New comparison" %}</a>
+        <a href="{% url 'analysis:home' %}" class="btn btn-outline-secondary">{% trans "Home" %}</a>
+    </div>
+</div>
+
+<div class="card border-0 mb-4">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans "Ratio" %}</th>
+                        <th>{{ comparison.label_a }}</th>
+                        <th>{{ comparison.label_b }}</th>
+                        <th>{% trans "Change" %}</th>
+                        <th>{% trans "Trend" %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in comparison.rows %}
+                    <tr>
+                        <td>
+                            <strong>{{ row.name }}</strong>
+                            <span class="text-muted small">({{ row.abbreviation }})</span>
+                        </td>
+                        <td>
+                            {{ row.period_a }}
+                            <span class="badge badge-{{ row.status_a }} ms-1">{{ row.status_a }}</span>
+                        </td>
+                        <td>
+                            {{ row.period_b }}
+                            <span class="badge badge-{{ row.status_b }} ms-1">{{ row.status_b }}</span>
+                        </td>
+                        <td>{{ row.change|default:"—" }}</td>
+                        <td>
+                            {% if row.trend == "better" %}
+                                <span class="text-success"><i class="bi bi-arrow-up-right"></i> {% trans "Better" %}</span>
+                            {% elif row.trend == "worse" %}
+                                <span class="text-danger"><i class="bi bi-arrow-down-right"></i> {% trans "Worse" %}</span>
+                            {% elif row.trend == "flat" %}
+                                <span class="text-muted"><i class="bi bi-dash"></i> {% trans "Flat" %}</span>
+                            {% else %}
+                                <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

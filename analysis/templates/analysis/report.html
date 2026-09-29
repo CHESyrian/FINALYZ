@@ -1,0 +1,571 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis Report – FINALYZ{% endblock %}
+
+{% block extra_css %}
+<style>
+    .status-good { color: var(--fa-good); }
+    .status-warning { color: var(--fa-warning); }
+    .status-bad { color: var(--fa-bad); }
+    .status-n\/a { color: var(--fa-muted); }
+    .badge-good { background-color: var(--fa-good); }
+    .badge-warning { background-color: var(--fa-warning); }
+    .badge-bad { background-color: var(--fa-bad); }
+    .badge-n\/a { background-color: var(--fa-muted); }
+    .ratio-card { transition: box-shadow .15s, transform .15s; }
+    .ratio-card:hover { box-shadow: 0 .35rem 1rem rgba(0,0,0,.1) !important; transform: translateY(-2px); }
+    .chart-box { position: relative; height: 280px; }
+</style>
+{% endblock %}
+
+{% block content %}
+{% if is_demo %}
+<div class="alert alert-info d-flex align-items-center justify-content-between flex-wrap gap-2">
+    <span><i class="bi bi-info-circle me-1"></i> <strong>Demo mode</strong> — sample data for Demo Manufacturing Co. (FY 2025).</span>
+    <span>
+        <a href="{% url 'analysis:manual_input' %}?sample=1" class="btn btn-sm btn-outline-primary me-1">Edit sample in form</a>
+        <a href="{% url 'analysis:home' %}" class="btn btn-sm btn-outline-secondary">Back to home</a>
+    </span>
+</div>
+{% endif %}
+
+<div class="mb-4 d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{% url 'analysis:home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Report</li>
+            </ol>
+        </nav>
+        <h1 class="h3 fw-bold mb-0">
+            Analysis Report
+            {% if statement.company_name %}
+                <span class="text-muted fw-normal">– {{ statement.company_name }}</span>
+            {% endif %}
+        </h1>
+        <p class="text-muted mb-0">
+            {% if statement.period %}Period: {{ statement.period }}{% endif %}
+            {% if industry_label %}
+                {% if statement.period %} · {% endif %}Industry: {{ industry_label }}
+            {% endif %}
+        </p>
+    </div>
+    <div class="d-flex gap-2 flex-wrap">
+        {% if can_export %}
+        <a href="{% url 'analysis:export_pdf' %}" class="btn btn-danger">
+            <i class="bi bi-file-earmark-pdf me-1"></i> PDF
+        </a>
+        <a href="{% url 'analysis:export_excel' %}" class="btn btn-success">
+            <i class="bi bi-file-earmark-excel me-1"></i> Excel
+        </a>
+        {% endif %}
+        {% if ai_configured %}
+        <form method="post" action="{% url 'analysis:ai_commentary' %}" class="d-inline" id="aiRetryForm">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark" id="aiRetryBtn">
+                <span class="ai-btn-label">
+                    <i class="bi bi-stars me-1"></i>
+                    {% if ai_commentary %}Regenerate AI{% else %}Generate AI{% endif %}
+                </span>
+                <span class="ai-btn-loading d-none">
+                    <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+                    Trying free providers…
+                </span>
+            </button>
+        </form>
+        {% endif %}
+        <a href="{% url 'analysis:manual_input' %}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil me-1"></i> New Analysis
+        </a>
+        <a href="{% url 'analysis:home' %}" class="btn btn-outline-secondary">Home</a>
+    </div>
+</div>
+
+{% if not ai_commentary %}
+<!-- Engine summary (fallback when AI is unavailable) -->
+<div class="card border-0 mb-4">
+    <div class="card-body">
+        <h2 class="h5 fw-semibold mb-2">
+            <i class="bi bi-clipboard-data me-1"></i> Summary
+        </h2>
+        <p class="mb-0">{{ result.summary }}</p>
+    </div>
+</div>
+{% endif %}
+
+{% if ai_status and not ai_status.ok %}
+<div class="alert alert-warning d-flex align-items-start gap-2 mb-4">
+    <i class="bi bi-exclamation-triangle mt-1"></i>
+    <div>
+        <strong>AI unavailable</strong> — calculated ratios below are still valid.
+        <div class="small mt-1">{{ ai_status.message }}</div>
+        {% if ai_configured %}
+        <form method="post" action="{% url 'analysis:ai_commentary' %}" class="mt-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-sm btn-outline-dark">Retry AI with free providers</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- AI Analysis (after ratio calc, before full report details) -->
+{% if ai_commentary %}
+<div class="card border-0 mb-4 border-start border-4 border-dark">
+    <div class="card-header bg-transparent d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span class="fw-semibold">
+            <i class="bi bi-stars me-1"></i> AI Analysis
+            <span class="badge text-bg-success ms-1">Live</span>
+        </span>
+        <span class="small text-muted">
+            <span class="badge text-bg-secondary">{{ ai_commentary.provider }}</span>
+            <span class="badge text-bg-light text-dark border">{{ ai_commentary.model }}</span>
+            · Based on calculated ratios · Educational only
+        </span>
+    </div>
+    <div class="card-body">
+        {% if ai_commentary.tone_note %}
+            <p class="fw-semibold mb-2">{{ ai_commentary.tone_note }}</p>
+        {% endif %}
+        <h3 class="h6 text-uppercase text-muted">Summary</h3>
+        <p class="mb-3">{{ ai_commentary.executive_summary }}</p>
+        <div class="row g-3">
+            <div class="col-md-4">
+                <h3 class="h6 text-success">Strengths</h3>
+                <ul class="small mb-0">
+                    {% for s in ai_commentary.key_strengths %}<li>{{ s }}</li>{% empty %}<li class="text-muted">—</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h6 text-danger">Risks &amp; concerns</h3>
+                <ul class="small mb-0">
+                    {% for s in ai_commentary.key_risks %}<li>{{ s }}</li>{% empty %}<li class="text-muted">—</li>{% endfor %}
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h3 class="h6 text-primary">Recommendations &amp; advice</h3>
+                <ul class="small mb-0">
+                    {% for s in ai_commentary.recommendations %}<li>{{ s }}</li>{% empty %}<li class="text-muted">—</li>{% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% if ai_commentary.questions_to_ask %}
+        <hr>
+        <h3 class="h6">Questions to explore</h3>
+        <ul class="small mb-0">
+            {% for q in ai_commentary.questions_to_ask %}<li>{{ q }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+{% elif ai_configured %}
+<div class="alert alert-warning d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+    <span class="small mb-0">
+        <i class="bi bi-exclamation-triangle me-1"></i>
+        AI analysis was not generated. Calculated ratios below are still valid.
+    </span>
+    <form method="post" action="{% url 'analysis:ai_commentary' %}">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-sm btn-dark">Retry AI analysis</button>
+    </form>
+</div>
+{% endif %}
+
+
+<!-- What-if simulation -->
+<div class="card border-0 mb-4">
+    <div class="card-header bg-transparent fw-semibold d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span><i class="bi bi-sliders me-1"></i> What-if simulation</span>
+        <span class="small text-muted">Change inputs by % → recalculate ratios → AI impact analysis</span>
+    </div>
+    <div class="card-body">
+        <form method="post" action="{% url 'analysis:whatif' %}">
+            {% csrf_token %}
+            <p class="small text-muted mb-3">
+                Enter percentage changes (e.g. <code>-10</code> = 10% decrease, <code>15</code> = 15% increase).
+                At least one field required.
+            </p>
+            <div class="row g-3">
+                {% for field in whatif_form %}
+                <div class="col-md-4 col-lg-3">
+                    <label class="form-label small mb-1" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.help_text %}<div class="form-text">{{ field.help_text }}</div>{% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="mt-3">
+                <button type="submit" class="btn btn-warning">
+                    <i class="bi bi-lightning me-1"></i> Run what-if
+                </button>
+            </div>
+        </form>
+
+        {% if whatif_result %}
+        <hr class="my-4">
+        <h3 class="h6 fw-semibold">Scenario changes applied</h3>
+        <ul class="small mb-3">
+            {% for field, info in whatif_result.change_log.items %}
+            <li>
+                <strong>{{ field }}</strong>:
+                {{ info.old }} → {{ info.new }}
+                <span class="badge text-bg-secondary">{{ info.pct }}</span>
+            </li>
+            {% endfor %}
+        </ul>
+
+        {% if whatif_result.ai %}
+        <div class="border rounded p-3 mb-3 bg-body-tertiary">
+            <div class="d-flex justify-content-between flex-wrap gap-2 mb-2">
+                <strong><i class="bi bi-stars me-1"></i> AI scenario analysis</strong>
+                <span class="small text-muted">{{ whatif_result.ai.provider }} · {{ whatif_result.ai.model }}</span>
+            </div>
+            {% if whatif_result.ai.tone_note %}
+            <p class="fw-semibold mb-2">{{ whatif_result.ai.tone_note }}</p>
+            {% endif %}
+            <p class="mb-3">{{ whatif_result.ai.executive_summary }}</p>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <h4 class="h6 text-primary">Key impacts</h4>
+                    <ul class="small mb-0">
+                        {% for x in whatif_result.ai.key_impacts %}<li>{{ x }}</li>{% empty %}<li class="text-muted">—</li>{% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="h6 text-danger">Risks</h4>
+                    <ul class="small mb-0">
+                        {% for x in whatif_result.ai.risks %}<li>{{ x }}</li>{% empty %}<li class="text-muted">—</li>{% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4 class="h6 text-success">Recommendations</h4>
+                    <ul class="small mb-0">
+                        {% for x in whatif_result.ai.recommendations %}<li>{{ x }}</li>{% empty %}<li class="text-muted">—</li>{% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <h3 class="h6 fw-semibold">Ratio comparison (baseline vs scenario)</h3>
+        <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Ratio</th>
+                        <th>Abbr</th>
+                        <th class="text-end">Baseline</th>
+                        <th class="text-end">Scenario</th>
+                        <th>Status change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in whatif_result.comparison %}
+                    <tr>
+                        <td class="small">{{ row.name }}</td>
+                        <td><code>{{ row.abbreviation }}</code></td>
+                        <td class="text-end">{{ row.baseline|default:"—" }}</td>
+                        <td class="text-end fw-semibold">{{ row.scenario|default:"—" }}</td>
+                        <td class="small">
+                            <span class="badge badge-{{ row.baseline_status }}">{{ row.baseline_status }}</span>
+                            →
+                            <span class="badge badge-{{ row.scenario_status }}">{{ row.scenario_status }}</span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% include "analysis/partials/_charts.html" %}
+
+{% include "analysis/partials/_scorecard.html" %}
+
+{% if not ai_commentary %}
+<div class="row g-4 mb-4">
+    <!-- Engine narrative fallback when AI unavailable -->
+    <div class="col-md-4">
+        <div class="card border-0 h-100">
+            <div class="card-header bg-success bg-opacity-10 text-success fw-semibold border-0">
+                <i class="bi bi-check-circle me-1"></i> Strengths ({{ result.strengths|length }})
+            </div>
+            <div class="card-body">
+                {% if result.strengths %}
+                    <ul class="mb-0 ps-3">
+                        {% for s in result.strengths %}
+                            <li class="mb-1 small">{{ s }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted small mb-0">No clear strengths identified from available data.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 h-100">
+            <div class="card-header bg-danger bg-opacity-10 text-danger fw-semibold border-0">
+                <i class="bi bi-exclamation-triangle me-1"></i> Weaknesses ({{ result.weaknesses|length }})
+            </div>
+            <div class="card-body">
+                {% if result.weaknesses %}
+                    <ul class="mb-0 ps-3">
+                        {% for w in result.weaknesses %}
+                            <li class="mb-1 small">{{ w }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted small mb-0">No major weaknesses detected.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 h-100">
+            <div class="card-header bg-primary bg-opacity-10 text-primary fw-semibold border-0">
+                <i class="bi bi-lightbulb me-1"></i> Recommendations ({{ result.recommendations|length }})
+            </div>
+            <div class="card-body">
+                {% if result.recommendations %}
+                    <ul class="mb-0 ps-3">
+                        {% for r in result.recommendations %}
+                            <li class="mb-1 small">{{ r }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-muted small mb-0">No specific recommendations at this time.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% include "analysis/partials/_dupont.html" %}
+
+<!-- Ratios by category (from calculated values + industry benchmarks + AI notes) -->
+{% for category, ratios in ratios_by_category.items %}
+<div class="mb-4">
+    <h2 class="h5 fw-semibold text-capitalize mb-3">
+        {% if category == "liquidity" %}
+            <i class="bi bi-droplet me-1"></i> Liquidity
+            <span class="text-muted fw-normal small ms-1">(balance sheet)</span>
+        {% elif category == "profitability" %}
+            <i class="bi bi-graph-up-arrow me-1"></i> Profitability
+            <span class="text-muted fw-normal small ms-1">(income statement)</span>
+        {% elif category == "solvency" %}
+            <i class="bi bi-shield-check me-1"></i> Solvency
+            <span class="text-muted fw-normal small ms-1">(balance sheet)</span>
+        {% elif category == "cash_flow" %}
+            <i class="bi bi-cash-coin me-1"></i> Cash Flow
+            <span class="text-muted fw-normal small ms-1">(cash flow statement)</span>
+        {% else %}
+            <i class="bi bi-speedometer2 me-1"></i> Efficiency
+            <span class="text-muted fw-normal small ms-1">(mixed)</span>
+        {% endif %}
+    </h2>
+    <div class="row g-3">
+        {% for r in ratios %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card ratio-card border-0 h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <h3 class="h6 mb-0">{{ r.name }}</h3>
+                            <small class="text-muted">{{ r.abbreviation }}</small>
+                        </div>
+                        <span class="badge badge-{{ r.status }}">{{ r.status|upper }}</span>
+                    </div>
+                    <div class="display-6 fw-bold status-{{ r.status }} mb-1">
+                        {{ r.formatted }}
+                    </div>
+                    <p class="small text-muted mb-2">{{ r.formula }}</p>
+                    <p class="small mb-0">{{ r.interpretation }}</p>
+                    {% if r.benchmark_median %}
+                    <p class="small text-muted mt-2 mb-0">
+                        <i class="bi bi-bar-chart me-1"></i>
+                        Industry median: <strong>{{ r.benchmark_median }}</strong>
+                        {% if r.benchmark_label %}
+                            · {{ r.benchmark_label }}
+                        {% endif %}
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endfor %}
+
+<!-- Full table -->
+<div class="card border-0 mb-4">
+    <div class="card-header bg-transparent fw-semibold">
+        <i class="bi bi-table me-1"></i> All Ratios
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0 align-middle">
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Ratio</th>
+                    <th>Abbr</th>
+                    <th class="text-end">Value</th>
+                    <th>Status</th>
+                    <th>Industry median</th>
+                    <th>vs Benchmark</th>
+                    <th>Interpretation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in benchmark_ratios %}
+                <tr>
+                    <td class="text-capitalize">{{ r.category }}</td>
+                    <td>{{ r.name }}</td>
+                    <td><code>{{ r.abbreviation }}</code></td>
+                    <td class="text-end fw-semibold status-{{ r.status }}">{{ r.formatted }}</td>
+                    <td><span class="badge badge-{{ r.status }}">{{ r.status }}</span></td>
+                    <td class="small">{{ r.benchmark_median|default:"—" }}</td>
+                    <td class="small">
+                        {% if r.vs_benchmark == "above" %}
+                            <span class="text-success">{{ r.benchmark_label }}</span>
+                        {% elif r.vs_benchmark == "below" %}
+                            <span class="text-danger">{{ r.benchmark_label }}</span>
+                        {% elif r.vs_benchmark == "near" %}
+                            <span class="text-warning">{{ r.benchmark_label }}</span>
+                        {% else %}
+                            —
+                        {% endif %}
+                    </td>
+                    <td class="small">{{ r.interpretation }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{{ chart_payload|json_script:"report-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+    const el = document.getElementById("report-data");
+    if (!el || typeof Chart === "undefined") return;
+
+    const data = JSON.parse(el.textContent);
+    const ratios = (data.ratios || []).filter(r => r.value !== null && r.status !== "n/a");
+
+    const isDark = document.documentElement.getAttribute("data-bs-theme") === "dark";
+    const gridColor = isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)";
+    const textColor = isDark ? "#adb5bd" : "#6c757d";
+
+    const statusColor = {
+        good: "#198754",
+        warning: "#fd7e14",
+        bad: "#dc3545",
+        "n/a": "#6c757d",
+    };
+
+    // Bar chart – ratio values (percentages scaled to 0-100 style where unit is %)
+    const barLabels = ratios.map(r => r.abbreviation);
+    const barValues = ratios.map(r => {
+        const v = parseFloat(r.value);
+        if (r.unit === "%") return v * 100;
+        return v;
+    });
+    const barColors = ratios.map(r => statusColor[r.status] || "#6c757d");
+
+    const barCtx = document.getElementById("ratiosBarChart");
+    if (barCtx) {
+        new Chart(barCtx, {
+            type: "bar",
+            data: {
+                labels: barLabels,
+                datasets: [{
+                    label: "Value (% ratios × 100; others as-is)",
+                    data: barValues,
+                    backgroundColor: barColors,
+                    borderRadius: 6,
+                    maxBarThickness: 36,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            title: (items) => {
+                                const i = items[0].dataIndex;
+                                return ratios[i].name;
+                            },
+                            label: (item) => {
+                                const r = ratios[item.dataIndex];
+                                return r.formatted + " (" + r.status + ")";
+                            },
+                        },
+                    },
+                },
+                scales: {
+                    x: {
+                        ticks: { color: textColor, maxRotation: 45, minRotation: 0 },
+                        grid: { display: false },
+                    },
+                    y: {
+                        ticks: { color: textColor },
+                        grid: { color: gridColor },
+                        beginAtZero: true,
+                    },
+                },
+            },
+        });
+    }
+
+    // Doughnut – status counts
+    const counts = { good: 0, warning: 0, bad: 0, "n/a": 0 };
+    (data.ratios || []).forEach(r => {
+        if (counts[r.status] !== undefined) counts[r.status]++;
+        else counts["n/a"]++;
+    });
+
+    const doughnutCtx = document.getElementById("statusDoughnutChart");
+    if (doughnutCtx) {
+        new Chart(doughnutCtx, {
+            type: "doughnut",
+            data: {
+                labels: ["Good", "Warning", "Bad", "N/A"],
+                datasets: [{
+                    data: [counts.good, counts.warning, counts.bad, counts["n/a"]],
+                    backgroundColor: [
+                        statusColor.good,
+                        statusColor.warning,
+                        statusColor.bad,
+                        statusColor["n/a"],
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 6,
+                }],
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "bottom",
+                        labels: { color: textColor, boxWidth: 12, padding: 14 },
+                    },
+                },
+                cutout: "62%",
+            },
+        });
+    }
+})();
+</script>
+{% endblock %}

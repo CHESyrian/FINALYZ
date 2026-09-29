@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Manual Input – FINALYZ{% endblock %}
+
+{% block content %}
+<div class="mb-4 d-flex justify-content-between align-items-start flex-wrap gap-2">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'analysis:home' %}">Home</a></li>
+                <li class="breadcrumb-item active">Manual Input</li>
+            </ol>
+        </nav>
+        <h1 class="h3 fw-bold">Manual Financial Input</h1>
+        <p class="text-muted mb-0">
+            Fill in the figures you have, grouped by statement.
+            Only <strong>Revenue</strong> is required — more data (especially cash flow) unlocks more ratios.
+        </p>
+    </div>
+    <div>
+        <a href="{% url 'analysis:manual_input' %}?sample=1" class="btn btn-outline-info btn-sm">
+            <i class="bi bi-magic me-1"></i> Load sample data
+        </a>
+    </div>
+</div>
+
+{% if form.non_field_errors %}
+<div class="alert alert-danger">
+    <strong><i class="bi bi-exclamation-triangle me-1"></i> Please fix the following:</strong>
+    <ul class="mb-0 mt-2">
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    <!-- Meta -->
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-building me-1"></i> Company & Period
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">{{ form.company_name|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.period|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.industry|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Statement -->
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-graph-up me-1"></i> Income Statement
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">{{ form.revenue|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.cogs|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.gross_profit|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.operating_income|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.interest_expense|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.net_income|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Balance Sheet – Assets -->
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-wallet2 me-1"></i> Balance Sheet – Assets
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">{{ form.current_assets|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.cash|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.cash_equivalents|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.inventory|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.prepaid_expenses|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.receivables|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.total_assets|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Balance Sheet – Liabilities & Equity -->
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-bank me-1"></i> Balance Sheet – Liabilities & Equity
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">{{ form.current_liabilities|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.accounts_payable|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.total_liabilities|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.total_debt|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.equity|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Averages (optional – improves DuPont, ATO, EM, ROA/ROE) -->
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-calculator me-1"></i> Averages
+            <span class="text-muted fw-normal small ms-2">Optional — preferred for turnover &amp; DuPont ratios</span>
+        </div>
+        <div class="card-body">
+            <p class="small text-muted mb-3">
+                If you have beginning and ending balances, enter the simple average
+                <code>(Beginning + Ending) ÷ 2</code>. When left blank, the point-in-time
+                Total Assets / Equity is used instead.
+            </p>
+            <div class="row g-3">
+                <div class="col-md-6">{{ form.average_total_assets|as_crispy_field }}</div>
+                <div class="col-md-6">{{ form.average_equity|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cash Flow Statement -->
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            <i class="bi bi-cash-coin me-1"></i> Cash Flow Statement
+            <span class="text-muted fw-normal small ms-2">Optional — unlocks cash-flow ratios</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">{{ form.operating_cash_flow|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.capital_expenditures|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.free_cash_flow|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.investing_cash_flow|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.financing_cash_flow|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap">
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-calculator me-1"></i> Analyze
+        </button>
+        <a href="{% url 'analysis:home' %}" class="btn btn-outline-secondary btn-lg">Cancel</a>
+    </div>
+</form>
+{% endblock %}

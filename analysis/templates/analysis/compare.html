@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags i18n %}
+
+{% block title %}{% trans "Compare Periods" %} – FINALYZ{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'analysis:home' %}">{% trans "Home" %}</a></li>
+            <li class="breadcrumb-item active">{% trans "Compare Periods" %}</li>
+        </ol>
+    </nav>
+    <h1 class="h3 fw-bold">{% trans "Multi-Period Comparison" %}</h1>
+    <p class="text-muted mb-0">
+        {% trans "Enter key figures for two periods (baseline A vs current B). Revenue is required for both." %}
+    </p>
+</div>
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">{% trans "Company" %}</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">{{ form.company_name|as_crispy_field }}</div>
+                <div class="col-md-4">{{ form.industry|as_crispy_field }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card border-0 h-100">
+                <div class="card-header fw-semibold text-primary">
+                    <i class="bi bi-1-circle me-1"></i> {% trans "Period A (baseline)" %}
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">{{ form.period_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.revenue_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.cogs_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.net_income_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.operating_income_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.current_assets_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.current_liabilities_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.total_assets_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.total_debt_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.equity_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.interest_expense_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.inventory_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.receivables_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.accounts_payable_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.operating_cash_flow_a|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.capital_expenditures_a|as_crispy_field }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <div class="card border-0 h-100">
+                <div class="card-header fw-semibold text-success">
+                    <i class="bi bi-2-circle me-1"></i> {% trans "Period B (current)" %}
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-12">{{ form.period_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.revenue_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.cogs_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.net_income_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.operating_income_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.current_assets_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.current_liabilities_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.total_assets_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.total_debt_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.equity_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.interest_expense_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.inventory_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.receivables_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.accounts_payable_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.operating_cash_flow_b|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.capital_expenditures_b|as_crispy_field }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2 flex-wrap mt-4">
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-arrow-left-right me-1"></i> {% trans "Compare" %}
+        </button>
+        <a href="{% url 'analysis:home' %}" class="btn btn-outline-secondary btn-lg">{% trans "Cancel" %}</a>
+    </div>
+</form>
+{% endblock %}

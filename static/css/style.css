@@ -1,0 +1,538 @@
+/* Financial Analyzer – professional, modern theme */
+
+:root,
+[data-bs-theme="light"] {
+    --fa-good: #0d9488;
+    --fa-warning: #d97706;
+    --fa-bad: #dc2626;
+    --fa-muted: #64748b;
+    --fa-body-bg: #f1f5f9;
+    --fa-card-bg: #ffffff;
+    --fa-footer-bg: #ffffff;
+    --fa-border: #e2e8f0;
+    --fa-primary: #0f766e;
+    --fa-primary-hover: #0d9488;
+    --fa-text: #0f172a;
+    --fa-text-muted: #64748b;
+    --fa-shadow: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --fa-shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+    --fa-shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.1);
+    --fa-radius: 0.75rem;
+    --fa-radius-sm: 0.5rem;
+}
+
+[data-bs-theme="dark"] {
+    --fa-good: #2dd4bf;
+    --fa-warning: #fbbf24;
+    --fa-bad: #f87171;
+    --fa-muted: #94a3b8;
+    --fa-body-bg: #0f172a;
+    --fa-card-bg: #1e293b;
+    --fa-footer-bg: #1e293b;
+    --fa-border: #334155;
+    --fa-primary: #14b8a6;
+    --fa-primary-hover: #2dd4bf;
+    --fa-text: #f1f5f9;
+    --fa-text-muted: #94a3b8;
+    --fa-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --fa-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
+    --fa-shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.4);
+}
+
+/* Base */
+html {
+    scroll-behavior: smooth;
+}
+
+html, body {
+    background-color: var(--fa-body-bg);
+    color: var(--fa-text);
+}
+
+body {
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6 {
+    letter-spacing: -0.02em;
+    font-weight: 600;
+    color: var(--fa-text);
+}
+
+.lead {
+    color: var(--fa-text-muted);
+    font-weight: 400;
+}
+
+.text-muted {
+    color: var(--fa-text-muted) !important;
+}
+
+/* Navbar – always teal brand bar; text stays white in both themes */
+.navbar,
+[data-bs-theme="light"] .navbar,
+[data-bs-theme="dark"] .navbar {
+    background: linear-gradient(135deg, #0f766e 0%, #0d9488 100%) !important;
+    border-bottom: none;
+    padding-top: 0.65rem;
+    padding-bottom: 0.65rem;
+    /* Override Bootstrap theme variables so text never goes grey */
+    --bs-navbar-color: #ffffff;
+    --bs-navbar-hover-color: #ffffff;
+    --bs-navbar-disabled-color: rgba(255, 255, 255, 0.5);
+    --bs-navbar-active-color: #ffffff;
+    --bs-navbar-brand-color: #ffffff;
+    --bs-navbar-brand-hover-color: #ffffff;
+    --bs-navbar-toggler-border-color: rgba(255, 255, 255, 0.35);
+    --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+[data-bs-theme="dark"] .navbar {
+    background: linear-gradient(135deg, #0f766e 0%, #115e59 100%) !important;
+}
+
+.navbar-brand,
+.navbar .navbar-brand {
+    letter-spacing: -0.4px;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #ffffff !important;
+}
+
+.navbar .nav-link,
+.navbar .btn-link.nav-link,
+.navbar .navbar-nav .nav-link {
+    text-decoration: none;
+    color: #ffffff !important;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.4rem 0.75rem !important;
+    border-radius: var(--fa-radius-sm);
+    transition: color 0.15s ease, background-color 0.15s ease, opacity 0.15s ease;
+    opacity: 0.92;
+}
+
+.navbar .nav-link:hover,
+.navbar .btn-link.nav-link:hover,
+.navbar .navbar-nav .nav-link:hover {
+    color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+}
+
+.navbar .nav-username {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.875rem;
+    opacity: 1;
+}
+
+#themeToggle {
+    font-size: 1.1rem;
+    color: #ffffff !important;
+}
+
+#themeToggle:hover {
+    color: #ffffff !important;
+}
+
+/* Cards */
+.card {
+    border: 1px solid var(--fa-border);
+    border-radius: var(--fa-radius);
+    background-color: var(--fa-card-bg);
+    box-shadow: var(--fa-shadow);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.card.border-0 {
+    border: 1px solid var(--fa-border) !important;
+}
+
+.card-header {
+    background-color: transparent;
+    border-bottom: 1px solid var(--fa-border);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.9rem 1.25rem;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.hover-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--fa-shadow-lg) !important;
+    border-color: var(--fa-primary) !important;
+}
+
+/* Buttons */
+.btn {
+    border-radius: var(--fa-radius-sm);
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.45rem 1rem;
+    transition: all 0.15s ease;
+}
+
+.btn-primary {
+    background-color: var(--fa-primary);
+    border-color: var(--fa-primary);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--fa-primary-hover);
+    border-color: var(--fa-primary-hover);
+}
+
+.btn-outline-primary {
+    color: var(--fa-primary);
+    border-color: var(--fa-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--fa-primary);
+    border-color: var(--fa-primary);
+    color: #fff;
+}
+
+.btn-success {
+    background-color: #059669;
+    border-color: #059669;
+}
+
+.btn-success:hover {
+    background-color: #047857;
+    border-color: #047857;
+}
+
+.btn-info {
+    background-color: #0891b2;
+    border-color: #0891b2;
+}
+
+.btn-info:hover {
+    background-color: #0e7490;
+    border-color: #0e7490;
+}
+
+.btn-sm {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.825rem;
+}
+
+/* Forms */
+.form-control,
+.form-select {
+    border-radius: var(--fa-radius-sm);
+    border-color: var(--fa-border);
+    font-size: 0.9rem;
+    padding: 0.5rem 0.85rem;
+    background-color: var(--fa-card-bg);
+    color: var(--fa-text);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--fa-primary);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18);
+}
+
+.form-label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--fa-text);
+    margin-bottom: 0.35rem;
+}
+
+.form-text {
+    color: var(--fa-text-muted);
+    font-size: 0.8rem;
+}
+
+/* Alerts */
+.alert {
+    border-radius: var(--fa-radius-sm);
+    border: none;
+    font-size: 0.9rem;
+    box-shadow: var(--fa-shadow);
+}
+
+.alert-info {
+    background-color: rgba(8, 145, 178, 0.1);
+    color: #0e7490;
+}
+
+[data-bs-theme="dark"] .alert-info {
+    background-color: rgba(8, 145, 178, 0.15);
+    color: #67e8f9;
+}
+
+.alert-warning {
+    background-color: rgba(217, 119, 6, 0.1);
+    color: #b45309;
+}
+
+[data-bs-theme="dark"] .alert-warning {
+    background-color: rgba(217, 119, 6, 0.15);
+    color: #fbbf24;
+}
+
+.alert-danger {
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #b91c1c;
+}
+
+[data-bs-theme="dark"] .alert-danger {
+    background-color: rgba(220, 38, 38, 0.15);
+    color: #fca5a5;
+}
+
+.alert-success {
+    background-color: rgba(5, 150, 105, 0.1);
+    color: #047857;
+}
+
+[data-bs-theme="dark"] .alert-success {
+    background-color: rgba(5, 150, 105, 0.15);
+    color: #6ee7b7;
+}
+
+/* Tables */
+.table {
+    font-size: 0.9rem;
+    --bs-table-bg: transparent;
+}
+
+.table thead th {
+    font-weight: 600;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--fa-text-muted);
+    border-bottom-width: 1px;
+    border-color: var(--fa-border);
+    padding: 0.75rem 1rem;
+}
+
+.table td {
+    padding: 0.7rem 1rem;
+    vertical-align: middle;
+    border-color: var(--fa-border);
+}
+
+[data-bs-theme="dark"] .table {
+    --bs-table-hover-bg: rgba(255, 255, 255, 0.04);
+}
+
+[data-bs-theme="dark"] thead {
+    border-color: var(--fa-border);
+}
+
+/* Breadcrumb */
+.breadcrumb {
+    margin-bottom: 0.35rem;
+    font-size: 0.85rem;
+    background: transparent;
+    padding: 0;
+}
+
+.breadcrumb-item a {
+    color: var(--fa-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.breadcrumb-item a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-item.active {
+    color: var(--fa-text-muted);
+}
+
+/* Code chips */
+code {
+    font-size: 0.85em;
+    padding: 0.15em 0.4em;
+    border-radius: 0.3rem;
+    background: rgba(100, 116, 139, 0.12);
+    color: var(--fa-text);
+}
+
+/* Footer */
+.fa-footer {
+    background-color: var(--fa-footer-bg);
+    border-color: var(--fa-border) !important;
+}
+
+.fa-footer .text-muted {
+    font-size: 0.8rem;
+}
+
+/* Layout */
+main .container {
+    max-width: 1080px;
+}
+
+/* Status colors (report) */
+.status-good { color: var(--fa-good); }
+.status-warning { color: var(--fa-warning); }
+.status-bad { color: var(--fa-bad); }
+.status-n\/a { color: var(--fa-muted); }
+
+.badge-good { background-color: var(--fa-good); }
+.badge-warning { background-color: var(--fa-warning); }
+.badge-bad { background-color: var(--fa-bad); }
+.badge-n\/a { background-color: var(--fa-muted); }
+
+/* Ratio cards on report */
+.ratio-card {
+    transition: box-shadow 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+}
+
+.ratio-card:hover {
+    box-shadow: var(--fa-shadow-md) !important;
+    transform: translateY(-2px);
+    border-color: var(--fa-primary) !important;
+}
+
+/* DuPont factor cards – high contrast in light & dark */
+.dupont-factor-card {
+    background-color: rgba(15, 118, 110, 0.06);
+    border-color: var(--fa-border) !important;
+    color: var(--fa-text);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dupont-factor-card:hover {
+    border-color: var(--fa-primary) !important;
+    box-shadow: var(--fa-shadow);
+}
+
+.dupont-factor-card .dupont-abbr {
+    background-color: var(--fa-card-bg);
+    color: var(--fa-text-muted);
+    border-color: var(--fa-border) !important;
+    font-weight: 600;
+    font-size: 0.7rem;
+    letter-spacing: 0.03em;
+}
+
+[data-bs-theme="dark"] .dupont-factor-card {
+    background-color: rgba(20, 184, 166, 0.12);
+}
+
+[data-bs-theme="dark"] .dupont-factor-card .dupont-abbr {
+    background-color: rgba(15, 23, 42, 0.5);
+    color: var(--fa-text-muted);
+}
+
+.chart-box {
+    position: relative;
+    height: 280px;
+}
+
+/* Badges */
+.badge {
+    font-weight: 500;
+    letter-spacing: 0.01em;
+    padding: 0.35em 0.65em;
+    border-radius: 0.35rem;
+}
+
+/* Links */
+a {
+    color: var(--fa-primary);
+}
+
+a:hover {
+    color: var(--fa-primary-hover);
+}
+
+/* Home page icon circles */
+.home-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+.home-icon.primary {
+    background: rgba(15, 118, 110, 0.12);
+    color: var(--fa-primary);
+}
+
+.home-icon.success {
+    background: rgba(5, 150, 105, 0.12);
+    color: #059669;
+}
+
+.home-icon.info {
+    background: rgba(8, 145, 178, 0.12);
+    color: #0891b2;
+}
+
+.home-icon.warning {
+    background: rgba(217, 119, 6, 0.12);
+    color: #d97706;
+}
+
+[data-bs-theme="dark"] .home-icon.primary {
+    background: rgba(20, 184, 166, 0.15);
+    color: #2dd4bf;
+}
+
+[data-bs-theme="dark"] .home-icon.success {
+    background: rgba(5, 150, 105, 0.2);
+    color: #34d399;
+}
+
+[data-bs-theme="dark"] .home-icon.info {
+    background: rgba(8, 145, 178, 0.2);
+    color: #22d3ee;
+}
+
+[data-bs-theme="dark"] .home-icon.warning {
+    background: rgba(245, 158, 11, 0.2);
+    color: #fbbf24;
+}
+
+/* Subtle section divider */
+.section-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fa-text-muted);
+    margin-bottom: 0.5rem;
+}
+
+/* Focus visible for accessibility */
+:focus-visible {
+    outline: 2px solid var(--fa-primary);
+    outline-offset: 2px;
+}
+
+.btn:focus-visible,
+.form-control:focus-visible,
+.form-select:focus-visible {
+    outline: none;
+}

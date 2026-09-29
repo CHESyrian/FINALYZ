@@ -1,0 +1,85 @@
+<!-- Industry benchmark scorecard -->
+{% if scorecard %}
+<div class="card border-0 mb-4">
+    <div class="card-header fw-semibold d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <span>
+            <i class="bi bi-trophy me-1"></i> Industry benchmark scorecard
+            {% if scorecard.industry_label %}
+                <span class="text-muted fw-normal small ms-1">vs {{ scorecard.industry_label }}</span>
+            {% endif %}
+        </span>
+        {% if scorecard.available %}
+        <span class="badge
+            {% if scorecard.grade == 'A' %}text-bg-success
+            {% elif scorecard.grade == 'B' %}text-bg-primary
+            {% elif scorecard.grade == 'C' %}text-bg-warning
+            {% elif scorecard.grade == 'D' %}text-bg-orange
+            {% else %}text-bg-danger{% endif %}
+            fs-6">
+            Grade {{ scorecard.grade }}
+        </span>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if scorecard.available %}
+        <p class="mb-3">{{ scorecard.summary }}</p>
+        <div class="row g-3 mb-3 text-center">
+            <div class="col-6 col-md-3">
+                <div class="border rounded p-3 h-100 bg-success bg-opacity-10">
+                    <div class="fs-4 fw-bold text-success">{{ scorecard.good }}</div>
+                    <div class="small text-muted">Good</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="border rounded p-3 h-100 bg-warning bg-opacity-10">
+                    <div class="fs-4 fw-bold text-warning">{{ scorecard.warning }}</div>
+                    <div class="small text-muted">Caution</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="border rounded p-3 h-100 bg-danger bg-opacity-10">
+                    <div class="fs-4 fw-bold text-danger">{{ scorecard.bad }}</div>
+                    <div class="small text-muted">Weak</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="border rounded p-3 h-100">
+                    <div class="fs-4 fw-bold">{{ scorecard.score_pct }}%</div>
+                    <div class="small text-muted">Score (good + ½ caution)</div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 small">
+            <div class="col-md-4">
+                <span class="text-muted">vs median:</span>
+                <span class="text-success ms-1">{{ scorecard.above }} above</span> ·
+                <span class="text-warning">{{ scorecard.near }} near</span> ·
+                <span class="text-danger">{{ scorecard.below }} below</span>
+            </div>
+            <div class="col-md-4">
+                {% if scorecard.strengths %}
+                <div class="fw-semibold text-success mb-1">Standing out</div>
+                <ul class="mb-0 ps-3">
+                    {% for s in scorecard.strengths %}
+                    <li class="mb-1">{{ s }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+            <div class="col-md-4">
+                {% if scorecard.watchouts %}
+                <div class="fw-semibold text-danger mb-1">Watch closely</div>
+                <ul class="mb-0 ps-3">
+                    {% for w in scorecard.watchouts %}
+                    <li class="mb-1">{{ w }}</li>
+                    {% endfor %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        {% else %}
+        <p class="text-muted small mb-0">{{ scorecard.summary }}</p>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

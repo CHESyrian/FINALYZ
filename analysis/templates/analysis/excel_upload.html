@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Upload Excel – FINALYZ{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'analysis:home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Upload Excel</li>
+        </ol>
+    </nav>
+    <h1 class="h3 fw-bold">Upload Financial Statement</h1>
+    <p class="text-muted">Upload an .xlsx file. We will detect columns and let you map them.</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card border-0">
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                    <div class="d-flex gap-2 mt-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-upload me-1"></i> Upload & Continue
+                        </button>
+                        <a href="{% url 'analysis:home' %}" class="btn btn-outline-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <p class="text-muted small mt-3">
+            <i class="bi bi-info-circle me-1"></i>
+            Tips: Use the first sheet. Put headers in one row. Numbers can include commas or parentheses for negatives.
+        </p>
+    </div>
+</div>
+{% endblock %}

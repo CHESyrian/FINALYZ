@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Map Columns – FINALYZ{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url 'analysis:home' %}">Home</a></li>
+            <li class="breadcrumb-item"><a href="{% url 'analysis:excel_upload' %}">Upload Excel</a></li>
+            <li class="breadcrumb-item active">Map Columns</li>
+        </ol>
+    </nav>
+    <h1 class="h3 fw-bold">Map Columns</h1>
+    <p class="text-muted mb-0">
+        Sheet: <strong>{{ sheet_name }}</strong> · {{ row_count }} data row{{ row_count|pluralize }} detected.
+        {% if company %} · Company: {{ company }}{% endif %}
+        {% if period %} · Period: {{ period }}{% endif %}
+    </p>
+    <p class="text-muted small mt-1 mb-0">
+        Fields are grouped by financial statement. Only <strong>Revenue</strong> is required —
+        map cash-flow columns to unlock cash-flow ratios.
+    </p>
+</div>
+
+{% if preview %}
+<div class="card border-0 mb-4">
+    <div class="card-header fw-semibold">
+        <i class="bi bi-eye me-1"></i> Preview (first data row)
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-striped mb-0">
+                <thead>
+                    <tr>
+                        {% for h, v in preview.items %}
+                            <th class="small">{{ h }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        {% for h, v in preview.items %}
+                            <td class="small">{{ v|default:"—" }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+
+    {% for group in mapping_groups %}
+    <div class="card border-0 mb-4">
+        <div class="card-header fw-semibold">
+            {% if "Income" in group.title %}
+                <i class="bi bi-graph-up me-1"></i>
+            {% elif "Assets" in group.title %}
+                <i class="bi bi-wallet2 me-1"></i>
+            {% elif "Liabilities" in group.title %}
+                <i class="bi bi-bank me-1"></i>
+            {% else %}
+                <i class="bi bi-cash-coin me-1"></i>
+            {% endif %}
+            {{ group.title }}
+            {% if "Cash Flow" in group.title %}
+                <span class="text-muted fw-normal small ms-2">Optional — enables cash-flow ratios</span>
+            {% endif %}
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                {% for item in group.fields %}
+                <div class="col-md-6">
+                    <label class="form-label small fw-semibold mb-1" for="id_map_{{ item.key }}">
+                        {{ item.label }}
+                        {% if item.auto %}<span class="badge bg-success-subtle text-success ms-1">auto</span>{% endif %}
+                    </label>
+                    <select name="map_{{ item.key }}" id="id_map_{{ item.key }}" class="form-select form-select-sm">
+                        <option value="">— skip —</option>
+                        {% for h in headers %}
+                            <option value="{{ h }}" {% if item.selected == h %}selected{% endif %}>{{ h }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <div class="d-flex gap-2">
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-calculator me-1"></i> Analyze
+        </button>
+        <a href="{% url 'analysis:excel_upload' %}" class="btn btn-outline-secondary btn-lg">Back</a>
+    </div>
+</form>
+{% endblock %}

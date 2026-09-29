@@ -1,0 +1,220 @@
+# Arabic translations for FINALYZ
+msgid ""
+msgstr ""
+"Project-Id-Version: FINALYZ 1.0\n"
+"Language: ar\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
+
+msgid "FINALYZ"
+msgstr "FINALYZ"
+
+msgid "Home"
+msgstr "الرئيسية"
+
+msgid "Logout"
+msgstr "تسجيل الخروج"
+
+msgid "Login"
+msgstr "تسجيل الدخول"
+
+msgid "Register"
+msgstr "إنشاء حساب"
+
+msgid "Toggle dark mode"
+msgstr "تبديل الوضع الداكن"
+
+msgid "Financial Analysis"
+msgstr "التحليل المالي"
+
+msgid "Upload an Excel statement, enter values manually, compare periods, or try the demo"
+msgstr "ارفع ملف Excel أو أدخل الأرقام يدوياً أو قارن بين فترتين أو جرّب العرض التوضيحي"
+
+msgid "Upload Excel"
+msgstr "رفع Excel"
+
+msgid "Upload a financial statement (.xlsx). Map columns and run full ratio analysis."
+msgstr "ارفع قائمة مالية (.xlsx) وقم بربط الأعمدة لتشغيل تحليل النسب."
+
+msgid "Manual Input"
+msgstr "إدخال يدوي"
+
+msgid "Enter key financial figures directly and get instant ratios and insights."
+msgstr "أدخل الأرقام المالية الرئيسية مباشرة واحصل على النسب والرؤى فوراً."
+
+msgid "Enter Data"
+msgstr "إدخال البيانات"
+
+msgid "Compare Periods"
+msgstr "مقارنة الفترات"
+
+msgid "Side-by-side ratios for two periods (e.g. FY 2024 vs FY 2025)."
+msgstr "مقارنة نسب فترتين جنباً إلى جنب (مثل 2024 مقابل 2025)."
+
+msgid "Compare"
+msgstr "مقارنة"
+
+msgid "Try Demo"
+msgstr "تجربة العرض"
+
+msgid "Instant analysis with sample data for Demo Manufacturing Co. (FY 2025)."
+msgstr "تحليل فوري ببيانات عينة لشركة التصنيع التجريبية (2025)."
+
+msgid "Run Demo"
+msgstr "تشغيل العرض"
+
+msgid "Or pre-fill the manual form with sample data"
+msgstr "أو املأ النموذج اليدوي ببيانات العينة مسبقاً"
+
+msgid "Multi-Period Comparison"
+msgstr "مقارنة متعددة الفترات"
+
+msgid "Enter key figures for two periods (baseline A vs current B). Revenue is required for both."
+msgstr "أدخل الأرقام الرئيسية لفترتين (أساس A مقابل حالي B). الإيرادات مطلوبة للفترتين."
+
+msgid "Company"
+msgstr "الشركة"
+
+msgid "Period A (baseline)"
+msgstr "الفترة أ (الأساس)"
+
+msgid "Period B (current)"
+msgstr "الفترة ب (الحالية)"
+
+msgid "Cancel"
+msgstr "إلغاء"
+
+msgid "Comparison Result"
+msgstr "نتيجة المقارنة"
+
+msgid "Result"
+msgstr "النتيجة"
+
+msgid "Period Comparison"
+msgstr "مقارنة الفترات"
+
+msgid "Improved"
+msgstr "تحسّن"
+
+msgid "Worsened"
+msgstr "تدهور"
+
+msgid "New comparison"
+msgstr "مقارنة جديدة"
+
+msgid "Ratio"
+msgstr "النسبة"
+
+msgid "Change"
+msgstr "التغيّر"
+
+msgid "Trend"
+msgstr "الاتجاه"
+
+msgid "Better"
+msgstr "أفضل"
+
+msgid "Worse"
+msgstr "أسوأ"
+
+msgid "Flat"
+msgstr "ثابت"
+
+msgid "DuPont Analysis"
+msgstr "تحليل دوبونت"
+
+msgid "Driver notes:"
+msgstr "ملاحظات المحركات:"
+
+msgid "DuPont analysis unavailable."
+msgstr "تحليل دوبونت غير متاح."
+
+msgid "Industry benchmark scorecard"
+msgstr "بطاقة تقييم المعايير الصناعية"
+
+msgid "Grade"
+msgstr "الدرجة"
+
+msgid "Good"
+msgstr "جيد"
+
+msgid "Caution"
+msgstr "حذر"
+
+msgid "Weak"
+msgstr "ضعيف"
+
+msgid "Standing out"
+msgstr "أبرز النقاط"
+
+msgid "Watch closely"
+msgstr "راقب عن كثب"
+
+msgid "Ratio values"
+msgstr "قيم النسب"
+
+msgid "Status overview"
+msgstr "نظرة عامة على الحالة"
+
+msgid "Analysis Report"
+msgstr "تقرير التحليل"
+
+msgid "Report"
+msgstr "التقرير"
+
+msgid "Period"
+msgstr "الفترة"
+
+msgid "Industry"
+msgstr "القطاع"
+
+msgid "Averages for the current period (assets, equity, and working-capital lines when available) were derived as (Period A + Period B) ÷ 2 so turnover and DuPont ratios use the textbook denominator."
+msgstr "تم اشتقاق متوسطات الفترة الحالية (الأصول وحقوق الملكية وبنود رأس المال العامل عند توفرها) كـ (الفترة أ + الفترة ب) ÷ 2 حتى تستخدم نسب الدوران وتحليل دوبونت المقام القياسي."
+
+msgid "What-if simulation"
+msgstr "محاكاة ماذا-لو"
+
+msgid "Export PDF"
+msgstr "تصدير PDF"
+
+msgid "Export Excel"
+msgstr "تصدير Excel"
+
+msgid "Strengths"
+msgstr "نقاط القوة"
+
+msgid "Weaknesses"
+msgstr "نقاط الضعف"
+
+msgid "Recommendations"
+msgstr "التوصيات"
+
+msgid "Manual Financial Input"
+msgstr "إدخال مالي يدوي"
+
+msgid "Company & Period"
+msgstr "الشركة والفترة"
+
+msgid "Income Statement"
+msgstr "قائمة الدخل"
+
+msgid "Balance Sheet – Assets"
+msgstr "الميزانية – الأصول"
+
+msgid "Balance Sheet – Liabilities & Equity"
+msgstr "الميزانية – الخصوم وحقوق الملكية"
+
+msgid "Cash Flow Statement"
+msgstr "قائمة التدفقات النقدية"
+
+msgid "Averages"
+msgstr "المتوسطات"
+
+msgid "Analyze"
+msgstr "حلّل"
+
+msgid "Load sample data"
+msgstr "تحميل بيانات عينة"

@@ -1,0 +1,51 @@
+<!-- DuPont Analysis Framework -->
+{% if dupont and dupont.available %}
+<div class="card border-0 mb-4">
+    <div class="card-header fw-semibold d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <span>
+            <i class="bi bi-diagram-3 me-1"></i> DuPont Analysis
+            <span class="badge text-bg-secondary ms-1">{{ dupont.model }}</span>
+        </span>
+        <span class="small text-muted">
+            ROE {{ dupont.roe_direct_formatted }}
+            {% if dupont.product_formatted %}
+                · factors product {{ dupont.product_formatted }}
+            {% endif %}
+        </span>
+    </div>
+    <div class="card-body">
+        <p class="small mb-3">{{ dupont.narrative }}</p>
+        <div class="row g-3 mb-3">
+            {% for c in dupont.components %}
+            <div class="col-md-6 col-lg">
+                <div class="dupont-factor-card border rounded p-3 h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <span class="fw-semibold">{{ c.name }}</span>
+                        <span class="badge border dupont-abbr">{{ c.abbreviation }}</span>
+                    </div>
+                    <div class="fs-5 fw-semibold mb-1 text-body">{{ c.formatted }}{% if c.unit == "x" %}×{% endif %}</div>
+                    <div class="small text-muted mb-1">{{ c.role }}</div>
+                    <div class="small text-muted font-monospace">{{ c.formula }}</div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% if dupont.drivers %}
+        <div class="small">
+            <span class="fw-semibold">Driver notes:</span>
+            <ul class="mb-0 ps-3">
+                {% for d in dupont.drivers %}
+                <li>{{ d }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% elif dupont and not dupont.available %}
+<div class="alert alert-light border small mb-4">
+    <i class="bi bi-info-circle me-1"></i>
+    <strong>DuPont analysis unavailable.</strong>
+    {{ dupont.narrative }}
+</div>
+{% endif %}

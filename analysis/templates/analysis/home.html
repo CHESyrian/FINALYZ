@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Home" %} – {% trans "FINALYZ" %}{% endblock %}
+
+{% block content %}
+<div class="text-center mb-5 pt-2">
+    <h1 class="h2 fw-bold mb-2">{% trans "Financial Analysis" %}</h1>
+    <p class="text-muted lead mb-0" style="font-size: 1.05rem;">
+        {% trans "Upload an Excel statement, enter values manually, compare periods, or try the demo" %}
+    </p>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 hover-card">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="home-icon primary mx-auto">
+                    <i class="bi bi-file-earmark-excel"></i>
+                </div>
+                <h3 class="h5 card-title mb-2">{% trans "Upload Excel" %}</h3>
+                <p class="card-text text-muted small flex-grow-1 mb-3">
+                    {% trans "Upload a financial statement (.xlsx). Map columns and run full ratio analysis." %}
+                </p>
+                <a href="{% url 'analysis:excel_upload' %}" class="btn btn-primary">
+                    <i class="bi bi-upload me-1"></i> {% trans "Upload Excel" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 hover-card">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="home-icon success mx-auto">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <h3 class="h5 card-title mb-2">{% trans "Manual Input" %}</h3>
+                <p class="card-text text-muted small flex-grow-1 mb-3">
+                    {% trans "Enter key financial figures directly and get instant ratios and insights." %}
+                </p>
+                <a href="{% url 'analysis:manual_input' %}" class="btn btn-success">
+                    <i class="bi bi-pencil me-1"></i> {% trans "Enter Data" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 hover-card">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="home-icon warning mx-auto">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+                <h3 class="h5 card-title mb-2">{% trans "Compare Periods" %}</h3>
+                <p class="card-text text-muted small flex-grow-1 mb-3">
+                    {% trans "Side-by-side ratios for two periods (e.g. FY 2024 vs FY 2025)." %}
+                </p>
+                <a href="{% url 'analysis:compare' %}" class="btn btn-warning">
+                    <i class="bi bi-bar-chart-steps me-1"></i> {% trans "Compare" %}
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3">
+        <div class="card h-100 hover-card">
+            <div class="card-body text-center p-4 d-flex flex-column">
+                <div class="home-icon info mx-auto">
+                    <i class="bi bi-play-circle"></i>
+                </div>
+                <h3 class="h5 card-title mb-2">{% trans "Try Demo" %}</h3>
+                <p class="card-text text-muted small flex-grow-1 mb-3">
+                    {% trans "Instant analysis with sample data for Demo Manufacturing Co. (FY 2025)." %}
+                </p>
+                <a href="{% url 'analysis:demo' %}" class="btn btn-info text-white">
+                    <i class="bi bi-lightning me-1"></i> {% trans "Run Demo" %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center mt-5">
+    <a href="{% url 'analysis:manual_input' %}?sample=1" class="text-muted small text-decoration-none">
+        <i class="bi bi-magic me-1"></i> {% trans "Or pre-fill the manual form with sample data" %}
+    </a>
+</div>
+{% endblock %}
